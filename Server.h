@@ -14,6 +14,8 @@ private:
     void login();
     void signUp();
     void showChat() const;
+    void changeName();
+    void changePassword();
 
 public:
     Server() = default; 

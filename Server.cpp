@@ -4,6 +4,7 @@ Server::~Server()
 {
     for (auto& user : _userList)
     {
+        //очищаем выделеную память
         //std::cout << "delete " << user->getUserLogin() << std::endl;
         delete user;
     }
@@ -28,8 +29,6 @@ User* Server::getUserByName(const std::string& name) const
     {
         if (name == user->getUserName()) return user;
     }
-
-
 
     return nullptr;
 }
@@ -113,7 +112,7 @@ void Server::showChat() const
     for (auto& mess : _messageList)
     {
         
-        //Показываем сообщения: от текущего пользователя, ему и всем
+        //Показываем сообщения: от текущего пользователя, для него и для всем
         if (_currentUser == mess.getFrom() || _currentUser == mess.getTo() || mess.getTo() == nullptr)
         {
             //подменяем для себя имя на me
@@ -134,6 +133,32 @@ void Server::showChat() const
     }
 
         std::cout << "------------" << std::endl;
+}
+
+void Server::changeName()
+{
+    std::string newName;
+
+    std::cout << "New name: ";
+    std::cin >> newName;
+
+        if (getUserByName(newName))
+        {
+            std::cout << "error: name is busy.." << std::endl;
+            return;
+        }
+
+    _currentUser->setUserName(newName);
+}
+
+void Server::changePassword()
+{
+    std::string newPassword;
+
+    std::cout << "New password: ";
+    std::cin >> newPassword;
+
+    _currentUser->setUserPassword(newPassword);
 }
 
 void Server::showLoginMenu()
@@ -173,11 +198,11 @@ void Server::showUserMenu()
 
     do
     {
-        std::cout << "Menu: (1)Show chat | (2)Add message | (3)Users | (0)Logout";
+        std::cout << "Menu: (1)Show chat | (2)Add message | (3)Users | (7)Change name | (8)Change password | (0)Logout";
         
         //для пользователя с правами admin дабавляем возможность остановить программу
         if (_currentUser->getIsAdmin())
-            std::cout << " | (s)Shutdown server";
+            std::cout << " | (s)Shutdown";
 
         std::cout << std::endl << ">> ";
         std::cin >> operation;
@@ -199,6 +224,12 @@ void Server::showUserMenu()
                 break;
             case '3':
                 showAllUsersName();
+                break;
+            case '7':
+                changeName();
+                break;
+            case '8':
+                changePassword();
                 break;
             case '0':
                 _currentUser = nullptr;
