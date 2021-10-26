@@ -140,8 +140,7 @@ void Server::changeName()
 
         if (getUserByName(newName))
         {
-            std::cout << "error: name is busy.." << std::endl;
-            return;
+            throw UserNameExp(); 
         }
 
     _currentUser->setUserName(newName);
@@ -229,7 +228,14 @@ void Server::showUserMenu()
                 showAllUsersName();
                 break;
             case '7':
-                changeName();
+                try
+                {
+                    changeName();
+                }
+                catch(const std::exception& e)
+                {
+                    std::cout << e.what() << std::endl;
+                }
                 break;
             case '8':
                 changePassword();
