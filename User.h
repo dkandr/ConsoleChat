@@ -12,12 +12,12 @@ public:
     User(const std::string& login, const std::string& password, const std::string& name, bool isAdmin = false) 
         : _login(login), _password(password), _name(name), _isAdmin(isAdmin) {}
   
-    std::string getUserLogin() const { return _login; }
+    const std::string& getUserLogin() const { return _login; }
 
-    std::string getUserPasword() const { return _password; }
+    const std::string& getUserPasword() const { return _password; }
     void setUserPassword(const std::string& password) { _password = password; }
 
-    std::string getUserName() const { return _name; }
+    const std::string& getUserName() const { return _name; }
     void setUserName(const std::string& name) { _name = name; }
 
     bool getIsAdmin() const { return _isAdmin; }
