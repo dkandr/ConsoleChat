@@ -75,31 +75,27 @@ void Server::signUp()
 {
     std::string login, password, name;
 
-    do
+    std::cout << "login: ";
+    std::cin >> login;
+    std::cout << "password: ";
+    std::cin >> password;
+    std::cout << "name: ";
+    std::cin >> name;
+
+    if (getUserByLogin(login))
     {
-        std::cout << "login: ";
-        std::cin >> login;
-        std::cout << "password: ";
-        std::cin >> password;
-        std::cout << "name: ";
-        std::cin >> name;
-
-        if (getUserByLogin(login))
-        {
-            std::cout << "error: login is busy, try again.." << std::endl;
-        }
-        else if (getUserByName(name))
-        {
-            std::cout << "error: name is busy, try again.." << std::endl;
-        }
-        else
-        {
-            User* user = new User(login, password, name);
-            _userList.push_back(user);
-            _currentUser = user;
-        }
-
-    } while (!_currentUser);   
+        throw UserLoginExp();
+    }
+    else if (getUserByName(name))
+    {
+        throw UserNameExp();
+    }
+    else
+    {
+        User *user = new User(login, password, name);
+        _userList.push_back(user);
+        _currentUser = user;
+    }
 }
 
 void Server::showChat() const
@@ -180,7 +176,14 @@ void Server::showLoginMenu()
                 login();
                 break;
             case '2':
-                signUp();
+                try
+                {
+                    signUp();
+                }
+                catch(const std::exception& e)
+                {
+                    std::cout << e.what() << std::endl;
+                }
                 break;
             default:
                 std::cout << "1 or 2..." << std::endl;

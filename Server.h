@@ -1,6 +1,21 @@
 #pragma once
 #include <vector>
+#include <exception>
 #include "Message.h"
+
+class UserLoginExp : public std::exception
+{
+public:
+    virtual const char* what() const noexcept override { return "error: user login is busy"; }
+};
+
+
+class UserNameExp : public std::exception
+{
+public:
+    virtual const char* what() const noexcept override { return "error: user name is busy"; }
+};
+
 
 class Server
 {
