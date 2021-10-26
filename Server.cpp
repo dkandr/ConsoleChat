@@ -198,11 +198,12 @@ void Server::showUserMenu()
 
     std::cout << "Hi, " << _currentUser->getUserName() << std::endl;
 
+    //Выполняем цикл, пока не выполнится пункт (0)Logout
     do
     {
         std::cout << "Menu: (1)Show chat | (2)Add message | (3)Users | (7)Change name | (8)Change password | (0)Logout";
         
-        //для пользователя с правами admin дабавляем возможность остановить программу
+        /* для пользователя с правами admin дабавляем возможность остановить программу */
         if (_currentUser->getIsAdmin())
             std::cout << " | (s)Shutdown";
 
