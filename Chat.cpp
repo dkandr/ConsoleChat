@@ -14,28 +14,6 @@ void Chat::start()
     _isChatWork = true;
 }
 
-//const std::string &Chat::getUserLoginByName(const std::string &name)
-//{
-//    for (auto &user : _userList)
-//    {
-//        if (name == user.getUserName())
-//            return user.getUserLogin();
-//    }
-//
-//    return {};
-//}
-
-//const std::string &Chat::getUserNameByLogin(const std::string &login)
-//{
-//    for (auto &user : _userList)
-//    {
-//        if (login == user.getUserLogin())
-//            return user.getUserName();
-//    }
-//
-//    return {};
-//}
-
 std::shared_ptr<User> Chat::getUserByLogin(const std::string &login) const
 {
     for (auto &user : _userList)
@@ -102,16 +80,15 @@ void Chat::signUp()
     {
         throw UserLoginExp();
     }
-    else if (getUserByName(name) || name == "all")
+    
+    if (getUserByName(name) || name == "all")
     {
         throw UserNameExp();
     }
-    else
-    {
-        User user = User(login, password, name);
-        _userList.push_back(user);
-        _currentUser = std::make_shared<User>(user);
-    }
+
+    User user = User(login, password, name);
+    _userList.push_back(user);
+    _currentUser = std::make_shared<User>(user);
 }
 
 void Chat::showChat() const

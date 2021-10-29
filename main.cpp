@@ -7,10 +7,12 @@ int main()
     chat.start();
 
     //два цикла: 1ый(внешний) для входа в систему, 2ой(внутренний) для работы с чатом
-    do {
+    do
+    {
         chat.showLoginMenu();
 
-        do {
+        do
+        {
             chat.showUserMenu();
         } while (chat.getCurrentUser());
 

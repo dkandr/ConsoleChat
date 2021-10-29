@@ -6,15 +6,13 @@
 
 struct UserLoginExp : public std::exception
 {
-    const char* what() const noexcept override { return "error: user login is busy"; }
+    const char *what() const noexcept override { return "error: user login is busy"; }
 };
-
 
 struct UserNameExp : public std::exception
 {
-    const char* what() const noexcept override { return "error: user name is busy"; }
+    const char *what() const noexcept override { return "error: user name is busy"; }
 };
-
 
 class Chat
 {
@@ -33,16 +31,13 @@ class Chat
 public:
     void start();
 
-    std::vector<User>& getAllUsers() { return _userList; }
-    std::vector<Message>& getAllMessages() { return _messageList; }
+    std::vector<User> &getAllUsers() { return _userList; }
+    std::vector<Message> &getAllMessages() { return _messageList; }
 
     bool isChatWork() const { return _isChatWork; }
 
- //   const std::string& getUserLoginByName(const std::string& name);
- //   const std::string& getUserNameByLogin(const std::string& login);
-
-    std::shared_ptr<User> getUserByLogin(const std::string& login) const;
-    std::shared_ptr<User> getUserByName(const std::string& name) const;
+    std::shared_ptr<User> getUserByLogin(const std::string &login) const;
+    std::shared_ptr<User> getUserByName(const std::string &name) const;
 
     std::shared_ptr<User> getCurrentUser() const { return _currentUser; }
 
