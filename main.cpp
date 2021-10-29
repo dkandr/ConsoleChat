@@ -1,8 +1,8 @@
-#include "Server.h"
+#include "Chat.h"
 
-int main()1
+int main()
 {
-    Server chat;
+    Chat chat;
 
     chat.start();
 
@@ -14,7 +14,7 @@ int main()1
             chat.showUserMenu();
         } while (chat.getCurrentUser());
 
-    } while (chat.isServerWork());
+    } while (chat.isChatWork());
 
     return 0;
 }

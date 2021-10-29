@@ -1,10 +1,8 @@
 #pragma once
-#include <iostream>
 #include "User.h"
 
 class Message
 {
-private:
     const User* _from = nullptr; // использую указатель а не ссылки,
     const User* _to = nullptr;   // потому что _to может быть nullptr (сообщение всем)
     std::string _text;
@@ -14,5 +12,5 @@ public:
 
     const User* getFrom() const { return _from; }
     const User* getTo() const { return _to; }
-    const std::string getText() const { return _text; } 
+    const std::string& getText() const { return _text; } 
 };

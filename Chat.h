@@ -3,24 +3,21 @@
 #include <exception>
 #include "Message.h"
 
-class UserLoginExp : public std::exception
+struct UserLoginExp : public std::exception
 {
-public:
-    virtual const char* what() const noexcept override { return "error: user login is busy"; }
+    const char* what() const noexcept override { return "error: user login is busy"; }
 };
 
 
-class UserNameExp : public std::exception
+struct UserNameExp : public std::exception
 {
-public:
-    virtual const char* what() const noexcept override { return "error: user name is busy"; }
+    const char* what() const noexcept override { return "error: user name is busy"; }
 };
 
 
-class Server
+class Chat
 {
-private:
-    bool _isServerWork = false;
+    bool _isChatWork = false;
     std::vector<User*> _userList;
     std::vector<Message> _messageList;
     User* _currentUser = nullptr;
@@ -33,15 +30,15 @@ private:
     void changePassword();
 
 public:
-    Server() = default; 
-    ~Server();
+    Chat() = default; 
+    ~Chat();
 
     void start();
 
     std::vector<User*> getAllUsers() const { return _userList; }
     std::vector<Message> getAllMessages() const { return _messageList; }
 
-    bool isServerWork() const { return _isServerWork; }
+    bool isChatWork() const { return _isChatWork; }
 
     User* getUserByName(const std::string& name) const;
     User* getUserByLogin(const std::string& login) const;

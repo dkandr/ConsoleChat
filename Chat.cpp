@@ -1,6 +1,7 @@
-#include "Server.h"
+#include <iostream>
+#include "Chat.h"
 
-Server::~Server()
+Chat::~Chat()
 {
     for (auto& user : _userList)
     {
@@ -10,20 +11,20 @@ Server::~Server()
     }
 }
 
-void Server::initialization()
+void Chat::initialization()
 {
     //добавляем двух пользователей
     _userList.push_back(new User{"admin@localhost","admin","Admin", true});
     _userList.push_back(new User{"demo@localhost","demo","Demo"}); 
 }
 
-void Server::start()
+void Chat::start()
 {
     initialization();
-    _isServerWork = true;
+    _isChatWork = true;
 }
 
-User* Server::getUserByName(const std::string& name) const
+User* Chat::getUserByName(const std::string& name) const
 {
     for (auto& user: _userList)
     {
@@ -33,7 +34,7 @@ User* Server::getUserByName(const std::string& name) const
     return nullptr;
 }
 
-User* Server::getUserByLogin(const std::string& login) const
+User* Chat::getUserByLogin(const std::string& login) const
 {
     for (auto& user: _userList)
     {
@@ -43,7 +44,7 @@ User* Server::getUserByLogin(const std::string& login) const
     return nullptr;
 }
 
-void Server::login()
+void Chat::login()
 {
     std::string login, password;
     char operation;
@@ -57,7 +58,7 @@ void Server::login()
 
         _currentUser = getUserByLogin(login);
 
-        if (_currentUser == nullptr || (password != _currentUser->getUserPasword()))
+        if (_currentUser == nullptr || (password != _currentUser->getUserPassword()))
         {
             _currentUser = nullptr;
          
@@ -71,7 +72,7 @@ void Server::login()
     } while (!_currentUser);
 }
 
-void Server::signUp()
+void Chat::signUp()
 {
     std::string login, password, name;
 
@@ -98,7 +99,7 @@ void Server::signUp()
     }
 }
 
-void Server::showChat() const
+void Chat::showChat() const
 {
     std::string from;
     std::string to;
@@ -131,7 +132,7 @@ void Server::showChat() const
         std::cout << "------------" << std::endl;
 }
 
-void Server::changeName()
+void Chat::changeName()
 {
     std::string newName;
 
@@ -146,7 +147,7 @@ void Server::changeName()
     _currentUser->setUserName(newName);
 }
 
-void Server::changePassword()
+void Chat::changePassword()
 {
     std::string newPassword;
 
@@ -156,7 +157,7 @@ void Server::changePassword()
     _currentUser->setUserPassword(newPassword);
 }
 
-void Server::showLoginMenu()
+void Chat::showLoginMenu()
 {
     _currentUser = nullptr;
 
@@ -192,7 +193,7 @@ void Server::showLoginMenu()
     }  while (!_currentUser);
 }
 
-void Server::showUserMenu()
+void Chat::showUserMenu()
 {
     char operation;
 
@@ -213,7 +214,7 @@ void Server::showUserMenu()
         if (_currentUser->getIsAdmin() && operation == 's')
         {
             _currentUser = nullptr;
-            _isServerWork = false;
+            _isChatWork = false;
             break;
         }
 
@@ -245,7 +246,7 @@ void Server::showUserMenu()
                 _currentUser = nullptr;
                 break;
             default:
-                std::cout << "unknow choice.." << std::endl;
+                std::cout << "unknown choice.." << std::endl;
                 break;
         }
 
@@ -253,7 +254,7 @@ void Server::showUserMenu()
 
 }
 
-void Server::showAllUsersName() const
+void Chat::showAllUsersName() const
 {
     std::cout << "--- Users ---" << std::endl;
     for(auto& user: _userList)
@@ -269,7 +270,7 @@ void Server::showAllUsersName() const
     std::cout << "-------------" << std::endl;
 }
 
-void Server::addMessage()
+void Chat::addMessage()
 {
     std::string to, text;
     User* recipient;
