@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <exception>
+#include <memory>
 #include "Message.h"
 
 struct UserLoginExp : public std::exception
@@ -18,9 +19,9 @@ struct UserNameExp : public std::exception
 class Chat
 {
     bool _isChatWork = false;
-    std::vector<User*> _userList;
+    std::vector<User> _userList;
     std::vector<Message> _messageList;
-    User* _currentUser = nullptr;
+    std::shared_ptr<User> _currentUser = nullptr;
 
     void initialization();
     void login();
@@ -30,20 +31,20 @@ class Chat
     void changePassword();
 
 public:
-    Chat() = default; 
-    ~Chat();
-
     void start();
 
-    std::vector<User*> getAllUsers() const { return _userList; }
-    std::vector<Message> getAllMessages() const { return _messageList; }
+    std::vector<User>& getAllUsers() { return _userList; }
+    std::vector<Message>& getAllMessages() { return _messageList; }
 
     bool isChatWork() const { return _isChatWork; }
 
-    User* getUserByName(const std::string& name) const;
-    User* getUserByLogin(const std::string& login) const;
+ //   const std::string& getUserLoginByName(const std::string& name);
+ //   const std::string& getUserNameByLogin(const std::string& login);
 
-    User* getCurrentUser() const { return _currentUser; }
+    std::shared_ptr<User> getUserByLogin(const std::string& login) const;
+    std::shared_ptr<User> getUserByName(const std::string& name) const;
+
+    std::shared_ptr<User> getCurrentUser() const { return _currentUser; }
 
     void showLoginMenu();
     void showUserMenu();

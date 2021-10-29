@@ -1,21 +1,11 @@
 #include <iostream>
 #include "Chat.h"
 
-Chat::~Chat()
-{
-    for (auto& user : _userList)
-    {
-        //очищаем выделеную память
-        //std::cout << "delete " << user->getUserLogin() << std::endl;
-        delete user;
-    }
-}
-
 void Chat::initialization()
 {
     //добавляем двух пользователей
-    _userList.push_back(new User{"admin@localhost","admin","Admin", true});
-    _userList.push_back(new User{"demo@localhost","demo","Demo"}); 
+    _userList.push_back(User{"admin@localhost", "admin", "Admin", true});
+    _userList.push_back(User{"demo@localhost", "demo", "Demo"});
 }
 
 void Chat::start()
@@ -24,21 +14,45 @@ void Chat::start()
     _isChatWork = true;
 }
 
-User* Chat::getUserByName(const std::string& name) const
+//const std::string &Chat::getUserLoginByName(const std::string &name)
+//{
+//    for (auto &user : _userList)
+//    {
+//        if (name == user.getUserName())
+//            return user.getUserLogin();
+//    }
+//
+//    return {};
+//}
+
+//const std::string &Chat::getUserNameByLogin(const std::string &login)
+//{
+//    for (auto &user : _userList)
+//    {
+//        if (login == user.getUserLogin())
+//            return user.getUserName();
+//    }
+//
+//    return {};
+//}
+
+std::shared_ptr<User> Chat::getUserByLogin(const std::string &login) const
 {
-    for (auto& user: _userList)
+    for (auto &user : _userList)
     {
-        if (name == user->getUserName()) return user;
+        if (login == user.getUserLogin())
+            return std::make_shared<User>(user);
     }
 
     return nullptr;
 }
 
-User* Chat::getUserByLogin(const std::string& login) const
+std::shared_ptr<User> Chat::getUserByName(const std::string &name) const
 {
-    for (auto& user: _userList)
+    for (auto &user : _userList)
     {
-        if (login == user->getUserLogin()) return user;
+        if (name == user.getUserName())
+            return std::make_shared<User>(user);
     }
 
     return nullptr;
@@ -61,12 +75,13 @@ void Chat::login()
         if (_currentUser == nullptr || (password != _currentUser->getUserPassword()))
         {
             _currentUser = nullptr;
-         
+
             std::cout << "login failed..." << std::endl;
-            std::cout << "(0)exit or (any key)repeat: " ;
+            std::cout << "(0)exit or (any key)repeat: ";
             std::cin >> operation;
 
-            if (operation == '0') break;
+            if (operation == '0')
+                break;
         }
 
     } while (!_currentUser);
@@ -83,19 +98,19 @@ void Chat::signUp()
     std::cout << "name: ";
     std::cin >> name;
 
-    if (getUserByLogin(login))
+    if (getUserByLogin(login) || login == "all")
     {
         throw UserLoginExp();
     }
-    else if (getUserByName(name))
+    else if (getUserByName(name) || name == "all")
     {
         throw UserNameExp();
     }
     else
     {
-        User *user = new User(login, password, name);
+        User user = User(login, password, name);
         _userList.push_back(user);
-        _currentUser = user;
+        _currentUser = std::make_shared<User>(user);
     }
 }
 
@@ -105,23 +120,23 @@ void Chat::showChat() const
     std::string to;
 
     std::cout << "--- Chat ---" << std::endl;
-    
-    for (auto& mess : _messageList)
+
+    for (auto &mess : _messageList)
     {
-        
+
         //Показываем сообщения: от текущего пользователя, для него и для всем
-        if (_currentUser == mess.getFrom() || _currentUser == mess.getTo() || mess.getTo() == nullptr)
+        if (_currentUser->getUserLogin() == mess.getFrom() || _currentUser->getUserLogin() == mess.getTo() || mess.getTo() == "all")
         {
             //подменяем для себя имя на me
-            from = (_currentUser == mess.getFrom()) ? "me" : mess.getFrom()->getUserName();
+            from = (_currentUser->getUserLogin() == mess.getFrom()) ? "me" : getUserByLogin(mess.getFrom())->getUserName();
 
-            if (mess.getTo() == nullptr)
+            if (mess.getTo() == "all")
             {
                 to = "(all)";
             }
-            else 
+            else
             {
-                to = (_currentUser == mess.getTo()) ? "me" : mess.getTo()->getUserName();;
+                to = (_currentUser->getUserLogin() == mess.getTo()) ? "me" : getUserByLogin(mess.getTo())->getUserName();
             }
 
             std::cout << "Message from " << from << " to " << to << std::endl;
@@ -129,7 +144,7 @@ void Chat::showChat() const
         }
     }
 
-        std::cout << "------------" << std::endl;
+    std::cout << "------------" << std::endl;
 }
 
 void Chat::changeName()
@@ -139,10 +154,10 @@ void Chat::changeName()
     std::cout << "New name: ";
     std::cin >> newName;
 
-        if (getUserByName(newName))
-        {
-            throw UserNameExp(); 
-        }
+    if (getUserByName(newName) || newName == "all")
+    {
+        throw UserNameExp();
+    }
 
     _currentUser->setUserName(newName);
 }
@@ -165,32 +180,32 @@ void Chat::showLoginMenu()
 
     do
     {
-        std::cout << "(1)Login" << std::endl;        
+        std::cout << "(1)Login" << std::endl;
         std::cout << "(2)SignUp" << std::endl;
         std::cout << ">> ";
         std::cin >> operation;
 
         switch (operation)
         {
-            case '1':
-                login();
-                break;
-            case '2':
-                try
-                {
-                    signUp();
-                }
-                catch(const std::exception& e)
-                {
-                    std::cout << e.what() << std::endl;
-                }
-                break;
-            default:
-                std::cout << "1 or 2..." << std::endl;
-                break;
+        case '1':
+            login();
+            break;
+        case '2':
+            try
+            {
+                signUp();
+            }
+            catch (const std::exception &e)
+            {
+                std::cout << e.what() << std::endl;
+            }
+            break;
+        default:
+            std::cout << "1 or 2..." << std::endl;
+            break;
         }
 
-    }  while (!_currentUser);
+    } while (!_currentUser);
 }
 
 void Chat::showUserMenu()
@@ -203,12 +218,13 @@ void Chat::showUserMenu()
     do
     {
         std::cout << "Menu: (1)Show chat | (2)Add message | (3)Users | (7)Change name | (8)Change password | (0)Logout";
-        
+
         /* для пользователя с правами admin дабавляем возможность остановить программу */
         if (_currentUser->getIsAdmin())
             std::cout << " | (s)Shutdown";
 
-        std::cout << std::endl << ">> ";
+        std::cout << std::endl
+                  << ">> ";
         std::cin >> operation;
 
         if (_currentUser->getIsAdmin() && operation == 's')
@@ -220,52 +236,50 @@ void Chat::showUserMenu()
 
         switch (operation)
         {
-            case '1':
-                showChat();
-                break;
-            case '2':
-                addMessage();
-                break;
-            case '3':
-                showAllUsersName();
-                break;
-            case '7':
-                try
-                {
-                    changeName();
-                }
-                catch(const std::exception& e)
-                {
-                    std::cout << e.what() << std::endl;
-                }
-                break;
-            case '8':
-                changePassword();
-                break;
-            case '0':
-                _currentUser = nullptr;
-                break;
-            default:
-                std::cout << "unknown choice.." << std::endl;
-                break;
+        case '1':
+            showChat();
+            break;
+        case '2':
+            addMessage();
+            break;
+        case '3':
+            showAllUsersName();
+            break;
+        case '7':
+            try
+            {
+                changeName();
+            }
+            catch (const std::exception &e)
+            {
+                std::cout << e.what() << std::endl;
+            }
+            break;
+        case '8':
+            changePassword();
+            break;
+        case '0':
+            _currentUser = nullptr;
+            break;
+        default:
+            std::cout << "unknown choice.." << std::endl;
+            break;
         }
 
-    }  while (_currentUser);
-
+    } while (_currentUser);
 }
 
 void Chat::showAllUsersName() const
 {
     std::cout << "--- Users ---" << std::endl;
-    for(auto& user: _userList)
+    for (auto &user : _userList)
     {
-        std::cout << user->getUserName();
-        
-        if (_currentUser == user)
-            std::cout << "(me)";
-        
-        std::cout << std::endl;
+        std::cout << user.getUserName();
 
+        if (_currentUser->getUserLogin() == user.getUserLogin())
+            std::cout << "(me)";
+
+        std::cout << std::endl;
     }
     std::cout << "-------------" << std::endl;
 }
@@ -273,7 +287,6 @@ void Chat::showAllUsersName() const
 void Chat::addMessage()
 {
     std::string to, text;
-    User* recipient;
 
     std::cout << "To (name or all): ";
     std::cin >> to;
@@ -281,15 +294,14 @@ void Chat::addMessage()
     std::cin.ignore();
     getline(std::cin, text);
 
-    if (to == "all") to.clear();
-
-    recipient = getUserByName(to); //для пустого to вернет nullptr
-
-    if (!to.empty() && !recipient) //если не удалось найти получателя по имени
+    if (!(to == "all" || getUserByName(to))) //если не удалось найти получателя по имени
     {
         std::cout << "error send message: cann't find " << to << std::endl;
         return;
     }
 
-    _messageList.push_back(Message{_currentUser, recipient, text});
+    if (to == "all")
+        _messageList.push_back(Message{_currentUser->getUserLogin(), "all", text});
+    else
+        _messageList.push_back(Message{_currentUser->getUserLogin(), getUserByName(to)->getUserLogin(), text});
 }
