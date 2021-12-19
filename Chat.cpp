@@ -50,7 +50,7 @@ void Chat::login()
 
         _currentUser = getUserByLogin(login);
 
-        if (_currentUser == nullptr || (password != _currentUser->getUserPassword()))
+        if (_currentUser == nullptr || !(_currentUser -> checkUserPassword(password)))
         {
             _currentUser = nullptr;
 
