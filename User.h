@@ -4,20 +4,20 @@
 
 class User
 {
-    const std::string _login;
-    uint* _password;
-    std::string _name;
-    const bool _isAdmin;
-
+    const std::string login_;
+    std::string name_;
+    const bool isAdmin_;
+    uint* password_;
+ 
 public:
     User(const std::string &login, const std::string &password, const std::string &name, bool isAdmin = false)
-        : _login(login), _name(name), _isAdmin(isAdmin) 
+        : login_(login), name_(name), isAdmin_(isAdmin) 
     {
         const char *str = password.c_str();
-        _password = sha1(str, password.length());
+        password_ = sha1(str, password.length());
     }
 
-    const std::string &getUserLogin() const { return _login; }
+    const std::string &getUserLogin() const { return login_; }
 
     bool checkUserPassword(const std::string password) const 
     {
@@ -25,7 +25,7 @@ public:
         
         uint* digest = sha1(str, password.length());
     
-        bool cmpHashes = compareSHA(_password, digest);
+        bool cmpHashes = compareSHA(password_, digest);
         delete[] digest;
 
         return cmpHashes;
@@ -34,11 +34,11 @@ public:
     void setUserPassword(const std::string &password) 
     { 
         const char *str = password.c_str();
-        _password = sha1(str, password.length());
+        password_ = sha1(str, password.length());
     }
 
-    const std::string &getUserName() const { return _name; }
-    void setUserName(const std::string &name) { _name = name; }
+    const std::string &getUserName() const { return name_; }
+    void setUserName(const std::string &name) { name_ = name; }
 
-    bool getIsAdmin() const { return _isAdmin; }
+    bool getIsAdmin() const { return isAdmin_; }
 };

@@ -16,10 +16,10 @@ struct UserNameExp : public std::exception
 
 class Chat
 {
-    bool _isChatWork = false;
-    std::vector<User> _userList;
-    std::vector<Message> _messageList;
-    std::shared_ptr<User> _currentUser = nullptr;
+    bool isChatWork_ = false;
+    std::vector<User> users_;
+    std::vector<Message> messages_;
+    std::shared_ptr<User> currentUser_ = nullptr;
 
     void initialization();
     void login();
@@ -31,15 +31,15 @@ class Chat
 public:
     void start();
 
-    std::vector<User> &getAllUsers() { return _userList; }
-    std::vector<Message> &getAllMessages() { return _messageList; }
+    std::vector<User> &getAllUsers() { return users_; }
+    std::vector<Message> &getAllMessages() { return messages_; }
 
-    bool isChatWork() const { return _isChatWork; }
+    bool isChatWork() const { return isChatWork_; }
 
     std::shared_ptr<User> getUserByLogin(const std::string &login) const;
     std::shared_ptr<User> getUserByName(const std::string &name) const;
 
-    std::shared_ptr<User> getCurrentUser() const { return _currentUser; }
+    std::shared_ptr<User> getCurrentUser() const { return currentUser_; }
 
     void showLoginMenu();
     void showUserMenu();
