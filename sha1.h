@@ -1,6 +1,6 @@
 #pragma once
 
-using namespace std;
+//using namespace std;
 
 typedef unsigned int uint;
 

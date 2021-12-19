@@ -51,7 +51,7 @@ uint* sha1(const char* message, uint msize_bytes) {
     
     ExpendBlock exp_block;
     //раунды поехали
-    for(int i=0; i<totalBlockCount; i++) {
+    for(uint i=0; i<totalBlockCount; i++) {
         
         // берем текущий блок и дополняем его
         unsigned char* cur_p = newMessage + one_block_size_bytes * i;
